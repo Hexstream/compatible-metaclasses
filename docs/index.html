@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="canonical" href="https://www.hexstreamsoft.com/libraries/compatible-metaclasses/" />
+    <meta name="author" content="Jean-Philippe Paradis" />
+    <link rel="author" href="https://abc.hexstream.xyz/" />
+    <link rel="license" href="https://www.hexstreamsoft.com/UNLICENSE" />
+    <meta name="description" content="Validates superclasses according to a simple substitution model, thereby greatly simplifying the definition of class mixins." />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>compatible-metaclasses | Libraries | HexstreamSoft</title>
+    <link href="https://www.hexstreamsoft.com/css/global.css" rel="stylesheet" type="text/css" />
+    <link href="https://www.hexstreamsoft.com/libraries/libraries.css" rel="stylesheet" type="text/css" />
+    <link href="https://global.hexstreamsoft.com/css/cl-definitions.css" rel="stylesheet" type="text/css" />
+    <script src="https://global.hexstreamsoft.com/scripts/global.js"></script>
+    <script src="https://www.hexstreamsoft.com/scripts/global.js"></script>
+    <script src="https://www.hexstreamsoft.com/libraries/libraries.js" defer></script>
+  </head>
+
+  <body>
+
+    <nav id="top-nav">
+
+      <div class="main">
+
+        <div class="breadcrumbs">
+          <a href="https://www.hexstreamsoft.com/">HexstreamSoft</a>
+          <span class="crumb"><span class="s"> » </span><a href="https://www.hexstreamsoft.com/libraries/">Libraries</a></span>
+          <span class="crumb"><span class="s"> » </span><a class="here">compatible-metaclasses</a></span>
+        </div>
+
+        <nav class="tabs" id="meta-nav">
+          <ul>
+            <li><a class="github" href="https://github.com/Hexstream/compatible-metaclasses"><span>See on GitHub</span></a></li>
+          </ul>
+        </nav>
+
+      </div>
+
+      <p id="last-updated"><span>This page was last updated on </span><time datetime="2020-09-18">18 september 2020</time><span>.</span></p>
+
+    </nav>
+
+    <main>
+
+      <header id="page-header">
+        <h1>compatible-metaclasses</h1>
+      </header>
+
+      <div class="tags contains-groups">
+        <div class="group prominent">
+          <span class="tag hv license">
+            <span class="h">License<span>:</span></span>
+            <span class="v">Public Domain</span>
+          </span>
+          <span class="s">, </span>
+          <span class="tag hv quicklisp">
+            <span class="h">Load it with Quicklisp<span>:</span></span>
+            <code class="v">(ql:quickload "compatible-metaclasses")</code>
+          </span>
+        </div>
+        <div class="group">
+          <span class="tag hv">
+            <span class="h">Library type<span>:</span></span>
+            <span class="v">Convenience</span>
+          </span>
+          <span class="s">, </span>
+          <span class="tag hv">
+            <span class="h">Project complexity<span>:</span></span>
+            <span class="v">Simple</span>
+          </span>
+        </div>
+      </div>
+
+      <nav class="tabs" id="further-info">
+        <ul>
+          <li><a href="https://www.hexstreamsoft.com/libraries/releases/latest-versions/#compatible-metaclasses">Latest release</a></li>
+          <li><a href="https://www.hexstreamsoft.com/libraries/dependencies/#compatible-metaclasses">Dependencies</a></li>
+        </ul>
+        <ul>
+          <li><a href="https://www.hexstreamsoft.com/libraries/external-pages-xref/#compatible-metaclasses">External library pages</a></li>
+        </ul>
+      </nav>
+
+      <section id="introduction">
+
+        <p><dfn><code class="relevant">compatible-metaclasses</code></dfn> validates superclasses according to a simple substitution model,<br/>thereby greatly simplifying the definition of class mixins.</p>
+
+      </section>
+
+      <nav class="tabs">
+        <ul>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#dictionary">Dictionary</a></li>
+        </ul>
+      </nav>
+
+      <section id="overview">
+
+        <h1 class="breadcrumbs-bar">
+          <span class="section-relative-nav">
+            <a href="#overview" class="anchor">⚓</a>
+          </span>
+          <span class="breadcrumbs">
+            <a class="here">Overview</a>
+          </span>
+        </h1>
+
+        <p>Traditionally, defining "class mixins" (subclasses of metaclasses, for instance if you just want to add a slot and/or a few methods) has been surprisingly hard due to the combinatorial explosion of <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a> methods needed when using the naive approach. This library defines a simple substitution model that completely solves this problem.</p>
+
+        <p>Here is an example usage:</p>
+
+        <pre><code>(<a href="http://www.lispworks.com/documentation/HyperSpec/Body/m_defcla.htm" target="_blank">defclass</a> my-class-mixin (<code class="relevant"><a href="#dictionary_standard-class">compatible-metaclasses:standard-class</a></code> <var>metaclass</var>)
+  ()
+  (:metaclass <code class="relevant"><a href="#dictionary_standard-metaclass">compatible-metaclasses:standard-metaclass</a></code>)
+  (:validate-as <var>metaclass</var>))</code></pre>
+
+        <p><strong>Note that <code class="relevant"><a href="#dictionary_standard-metaclass">compatible-metaclasses:standard-metaclass</a></code>, being used as <em>the metaclass of a metaclass</em>, is thus a <dfn>metametaclass</dfn>!</strong></p>
+
+        <p>Also note that <code class="relevant"><a href="#dictionary_standard-class">compatible-metaclasses:standard-class</a></code> will be effectively ignored in any subclasses of <code>my-class-mixin</code> that don't have <code class="relevant"><a href="#dictionary_standard-metaclass">compatible-metaclasses:standard-metaclass</a></code> as their metaclass, which is exactly what we want since we can't safely make any assumptions about how <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a> should behave (i.e. metaclass compatibility) for those subclasses.</p>
+
+      </section>
+
+      <section id="dictionary">
+
+        <h1 class="breadcrumbs-bar">
+          <span class="section-relative-nav">
+            <a href="#dictionary" class="anchor">⚓</a>
+          </span>
+          <span class="breadcrumbs">
+            <a class="here">Dictionary</a>
+          </span>
+        </h1>
+
+        <nav class="tabs">
+          <ul>
+            <li><a href="#dictionary_compatible-metaclasses"><span class="type">Package</span> <code>compatible-metaclasses</code></a></li>
+            <li><a href="#dictionary_core">Core</a></li>
+            <li><a href="#dictionary_standard">Standard</a></li>
+          </ul>
+        </nav>
+
+        <section id="dictionary_compatible-metaclasses">
+
+          <h1 class="breadcrumbs-bar">
+            <span class="section-relative-nav">
+              <a href="#dictionary_compatible-metaclasses" class="anchor">⚓</a>
+            </span>
+            <span class="breadcrumbs">
+              <a href="#dictionary">Dictionary</a>
+              <span class="crumb"><span class="s"> » </span><a class="here">compatible-metaclasses</a></span>
+            </span>
+          </h1>
+
+          <article class="package definition">
+
+            <h1><span class="type">Package</span> <span class="name self">compatible-metaclasses</span></h1>
+
+            <section class="description">
+              <h1>Description</h1>
+              <p>All symbols from this package should normally be explicitly qualified, such as <code class="relevant"><a href="#dictionary_standard-class">compatible-metaclasses:standard-class</a></code>.<br />Don't <code>(:use)</code>!</p>
+            </section>
+
+          </article>
+
+        </section>
+
+        <section id="dictionary_core">
+
+          <h1 class="breadcrumbs-bar">
+            <span class="section-relative-nav">
+              <a href="#dictionary_core" class="anchor">⚓</a>
+            </span>
+            <span class="breadcrumbs">
+              <a href="#dictionary">Dictionary</a>
+              <span class="crumb"><span class="s"> » </span><a class="here">Core</a></span>
+            </span>
+          </h1>
+
+          <nav class="tabs">
+            <ul>
+              <li><a href="#dictionary_class"><span class="type">Class</span> <code>class</code></a></li>
+              <li><a href="#dictionary_substitute"><span class="type">Generic Function</span> <code>substitute</code></a></li>
+            </ul>
+          </nav>
+
+          <section id="dictionary_class">
+
+            <h1 class="breadcrumbs-bar">
+              <span class="section-relative-nav">
+                <a href="#dictionary_class" class="anchor">⚓</a>
+              </span>
+              <span class="breadcrumbs">
+                <a href="#dictionary">Dictionary</a>
+                <span class="crumb"><span class="s"> » </span><a href="#dictionary_core">Core</a></span>
+                <span class="crumb"><span class="s"> » </span><a class="here">class</a></span>
+              </span>
+            </h1>
+
+            <article class="class definition">
+
+              <h1><span class="type">Class</span> <span class="name self">compatible-metaclasses:class</span></h1>
+
+              <p class="direct-superclasses"><a href="http://www.lispworks.com/documentation/HyperSpec/Body/t_std_cl.htm" target="_blank">standard-class</a></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Metaclasses inheriting from this class will potentially substitute the <var>class</var> and/or the <var>superclass</var> for another class during <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a>.</p>
+              </section>
+
+            </article>
+
+            <article class="method definition" id="dictionary_validate-superclass_class_cl:class">
+
+              <h1><span class="type">Method</span> <span class="name self">c2mop:validate-superclass</span></h1>
+
+              <p class="args-and-retvals">(<var>class</var> <code class="specializer relevant"><a href="#dictionary_class">compatible-metaclasses:class</a></code>) (<var>superclass</var> <a href="http://www.lispworks.com/documentation/HyperSpec/Body/t_class.htm" target="_blank">class</a>) =&gt; <var>compatiblep</var></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Call <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a> on the <code class="specializer relevant"><a href="#dictionary_substitute">compatible-metaclasses:substitute</a></code> for <var>class</var> and <var>superclass</var>, unless the substitute is the original <var>class</var>, in which case, call the next method.</p>
+              </section>
+
+            </article>
+
+            <article class="method definition" id="dictionary_validate-superclass_cl:class_class">
+
+              <h1><span class="type">Method</span> <span class="name self">c2mop:validate-superclass</span></h1>
+
+              <p class="args-and-retvals">(<var>class</var> <a href="http://www.lispworks.com/documentation/HyperSpec/Body/t_class.htm" target="_blank">class</a>) (<var>superclass</var> <code class="specializer relevant"><a href="#dictionary_class">compatible-metaclasses:class</a></code>) =&gt; <var>compatiblep</var></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Call <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a> on <var>class</var> and the <code class="specializer relevant"><a href="#dictionary_substitute">compatible-metaclasses:substitute</a></code> for <var>superclass</var>, unless the substitute is the original <var>superclass</var>, in which case, call the next method.</p>
+              </section>
+
+            </article>
+
+          </section>
+
+          <section id="dictionary_substitute">
+
+            <h1 class="breadcrumbs-bar">
+              <span class="section-relative-nav">
+                <a href="#dictionary_substitute" class="anchor">⚓</a>
+              </span>
+              <span class="breadcrumbs">
+                <a href="#dictionary">Dictionary</a>
+                <span class="crumb"><span class="s"> » </span><a href="#dictionary_core">Core</a></span>
+                <span class="crumb"><span class="s"> » </span><a class="here">substitute</a></span>
+              </span>
+            </h1>
+
+            <article class="generic-function definition">
+
+              <h1><span class="type">Generic Function</span> <span class="name self">compatible-metaclasses:substitute</span></h1>
+
+              <p class="args-and-retvals"><var>class</var> =&gt; <var>substitute</var></p>
+
+              <section class="arguments-and-values">
+                <h1>Arguments and Values</h1>
+                <ul>
+                  <li><var>class</var> -- A class.</li>
+                  <li><var>substitute</var> -- A class.</li>
+                </ul>
+              </section>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Returns the <var>substitute</var> to use instead of the original <var>class</var> for purposes of superclass validation by <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a>. Returns <var>class</var> if no substitution is desired.</p>
+              </section>
+
+              <section class="methods">
+                <h1>Methods</h1>
+
+                <article class="method definition" id="dictionary_substitute_standard-class">
+
+                  <h1><span class="type">Method</span> <span class="name self">compatible-metaclasses:substitute</span></h1>
+
+                  <p class="args-and-retvals">(<var>class</var> <code class="specializer relevant"><a href="#dictionary_standard-class">compatible-metaclasses:standard-class</a></code>) =&gt; <var>substitute</var></p>
+
+                  <section class="description">
+                    <h1>Description</h1>
+                    <p>Returns <code>(or (<code class="specializer relevant"><a href="#dictionary_metasubstitute">compatible-metaclasses:metasubstitute</a></code> (<a href="http://www.lispworks.com/documentation/HyperSpec/Body/f_clas_1.htm" target="_blank">class-of</a> <var>class</var>)) <var>class</var>)</code>.</p>
+                  </section>
+
+                </article>
+
+              </section>
+
+            </article>
+
+          </section>
+
+          <nav class="end-of-section-indicator">
+            <a href="#dictionary_core">
+              "<span>Core</span>" end.
+            </a>
+          </nav>
+
+        </section>
+
+        <section id="dictionary_standard">
+
+          <h1 class="breadcrumbs-bar">
+            <span class="section-relative-nav">
+              <a href="#dictionary_standard" class="anchor">⚓</a>
+            </span>
+            <span class="breadcrumbs">
+              <a href="#dictionary">Dictionary</a>
+              <span class="crumb"><span class="s"> » </span><a class="here">Standard</a></span>
+            </span>
+          </h1>
+
+          <nav class="tabs">
+            <ul>
+              <li><a href="#dictionary_standard-class"><span class="type">Class</span> <code>standard-class</code></a></li>
+              <li><a href="#dictionary_standard-metaclass"><span class="type">Class</span> <code>standard-metaclass</code></a></li>
+            </ul>
+            <ul>
+              <li><a href="#dictionary_validate-as-mixin"><span class="type">Class</span> <code>validate-as-mixin</code></a></li>
+              <li><a href="#dictionary_validate-as"><span class="type">Generic Function</span> <code>validate-as</code></a></li>
+            </ul>
+            <ul>
+              <li><a href="#dictionary_metasubstitute-mixin"><span class="type">Class</span> <code>metasubstitute-mixin</code></a></li>
+              <li><a href="#dictionary_metasubstitute"><span class="type">Generic Function</span> <code>metasubstitute</code></a></li>
+            </ul>
+          </nav>
+
+          <section id="dictionary_standard-class">
+
+            <h1 class="breadcrumbs-bar">
+              <span class="section-relative-nav">
+                <a href="#dictionary_standard-class" class="anchor">⚓</a>
+              </span>
+              <span class="breadcrumbs">
+                <a href="#dictionary">Dictionary</a>
+                <span class="crumb"><span class="s"> » </span><a href="#dictionary_standard">Standard</a></span>
+                <span class="crumb"><span class="s"> » </span><a class="here">standard-class</a></span>
+              </span>
+            </h1>
+
+            <article class="class definition">
+
+              <h1><span class="type">Class</span> <span class="name self">compatible-metaclasses:standard-class</span></h1>
+
+              <p class="direct-superclasses"><code class="relevant"><a href="#dictionary_class">compatible-metaclasses:class</a></code></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>See the <a href="#dictionary_substitute_standard-class">corresponding method</a>.</p>
+              </section>
+
+            </article>
+
+          </section>
+
+          <section id="dictionary_standard-metaclass">
+
+            <h1 class="breadcrumbs-bar">
+              <span class="section-relative-nav">
+                <a href="#dictionary_standard-metaclass" class="anchor">⚓</a>
+              </span>
+              <span class="breadcrumbs">
+                <a href="#dictionary">Dictionary</a>
+                <span class="crumb"><span class="s"> » </span><a href="#dictionary_standard">Standard</a></span>
+                <span class="crumb"><span class="s"> » </span><a class="here">standard-metaclass</a></span>
+              </span>
+            </h1>
+
+            <article class="class definition">
+
+              <h1><span class="type">Class</span> <span class="name self">compatible-metaclasses:standard-metaclass</span></h1>
+
+              <p class="direct-superclasses"><code class="relevant"><a href="#dictionary_validate-as-mixin">compatible-metaclasses:validate-as-mixin</a></code>, <code class="relevant"><a href="#dictionary_metasubstitute-mixin">compatible-metaclasses:metasubstitute-mixin</a></code>, <a href="http://www.lispworks.com/documentation/HyperSpec/Body/t_std_cl.htm" target="_blank">standard-class</a></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Use this <em>metametaclass</em> as the metaclass of your metaclass to designate the metaclass to use instead of your metaclass for purposes of validation.</p>
+              </section>
+
+            </article>
+
+            <article class="method definition" id="dictionary_validate-superclass_standard-metaclass_cl:class">
+
+              <h1><span class="type">Method</span> <span class="name self">c2mop:validate-superclass</span></h1>
+
+              <p class="args-and-retvals">(<var>class</var> <code class="specializer relevant"><a href="#dictionary_standard-metaclass">compatible-metaclasses:standard-metaclass</a></code>) (<var>superclass</var> <a href="http://www.lispworks.com/documentation/HyperSpec/Body/t_class.htm" target="_blank">class</a>) =&gt; <var>compatiblep</var></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Call <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a> on the class <a href="http://www.lispworks.com/documentation/HyperSpec/Body/t_std_ob.htm" target="_blank">standard-object</a> and <var>superclass</var>.</p>
+              </section>
+
+            </article>
+
+            <article class="method definition" id="dictionary_validate-superclass_cl:class_standard-metaclass">
+
+              <h1><span class="type">Method</span> <span class="name self">c2mop:validate-superclass</span></h1>
+
+              <p class="args-and-retvals">(<var>class</var> <a href="http://www.lispworks.com/documentation/HyperSpec/Body/t_class.htm" target="_blank">class</a>) (<var>superclass</var> <code class="specializer relevant"><a href="#dictionary_standard-metaclass">compatible-metaclasses:standard-metaclass</a></code>) =&gt; <var>compatiblep</var></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Call <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a> on <var>class</var> and the class <a href="http://www.lispworks.com/documentation/HyperSpec/Body/t_std_ob.htm" target="_blank">standard-object</a>.</p>
+              </section>
+
+            </article>
+
+          </section>
+
+          <section id="dictionary_validate-as-mixin">
+
+            <h1 class="breadcrumbs-bar">
+              <span class="section-relative-nav">
+                <a href="#dictionary_validate-as-mixin" class="anchor">⚓</a>
+              </span>
+              <span class="breadcrumbs">
+                <a href="#dictionary">Dictionary</a>
+                <span class="crumb"><span class="s"> » </span><a href="#dictionary_standard">Standard</a></span>
+                <span class="crumb"><span class="s"> » </span><a class="here">validate-as-mixin</a></span>
+              </span>
+            </h1>
+
+            <article class="class definition">
+
+              <h1><span class="type">Class</span> <span class="name self">compatible-metaclasses:validate-as-mixin</span></h1>
+
+              <p class="direct-superclasses"><a href="https://www.hexstreamsoft.com/libraries/class-options/#dictionary_options-mixin" target="_blank">class-options:options-mixin</a></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Slots:</p>
+                <pre><code>((<var>validate-as</var> :initarg :validate-as
+              :reader <code class="relevant"><a href="#dictionary_validate-as">compatible-metaclasses:validate-as</a></code>
+              :type class
+              :initform (find-class 'standard-class)
+              :documentation "The metaclass to use for purposes of validation."))</code></pre>
+              </section>
+
+            </article>
+
+            <article class="method definition" id="dictionary_class-options:canonicalize-options_validate-as-mixin">
+
+              <h1><span class="type">Method</span> <span class="name self"><a href="https://www.hexstreamsoft.com/libraries/class-options/#dictionary_canonicalize-options" target="_blank">class-options:canonicalize-options</a></span></h1>
+
+              <p class="args-and-retvals">(<var>class</var> <code class="specializer relevant"><a href="#dictionary_validate-as-mixin">compatible-metaclasses:validate-as-mixin</a></code>) &amp;key <var>validate-as</var> =&gt; <var>canonicalized-options</var></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>If <var>validate-as</var> was supplied, then canonicalize it as follows:</p>
+                <p>First, if <var>validate-as</var> is a list of one element, then let <var>validate-as</var> be that element. This is done to support <a href="http://www.lispworks.com/documentation/HyperSpec/Body/m_defcla.htm" target="_blank">defclass</a> class option syntax.</p>
+                <p>Then, call <a href="https://www.hexstreamsoft.com/libraries/enhanced-find-class/#dictionary_find-class" target="_blank">enhanced-find-class:find-class</a> on <var>validate-as</var>.</p>
+              </section>
+
+            </article>
+
+          </section>
+
+          <section id="dictionary_validate-as">
+
+            <h1 class="breadcrumbs-bar">
+              <span class="section-relative-nav">
+                <a href="#dictionary_validate-as" class="anchor">⚓</a>
+              </span>
+              <span class="breadcrumbs">
+                <a href="#dictionary">Dictionary</a>
+                <span class="crumb"><span class="s"> » </span><a href="#dictionary_standard">Standard</a></span>
+                <span class="crumb"><span class="s"> » </span><a class="here">validate-as</a></span>
+              </span>
+            </h1>
+
+            <article class="generic-function reader definition">
+
+              <h1><span class="type">Generic Function</span> <span class="name self">compatible-metaclasses:validate-as</span></h1>
+
+              <p class="args-and-retvals"><var>metametaclass</var> =&gt; <var>metaclass</var></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Returns the <var>metaclass</var> to use instead of the instance of this <var>metametaclass</var> to check compatibility using <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a>.</p>
+              </section>
+
+            </article>
+
+          </section>
+
+          <section id="dictionary_metasubstitute-mixin">
+
+            <h1 class="breadcrumbs-bar">
+              <span class="section-relative-nav">
+                <a href="#dictionary_metasubstitute-mixin" class="anchor">⚓</a>
+              </span>
+              <span class="breadcrumbs">
+                <a href="#dictionary">Dictionary</a>
+                <span class="crumb"><span class="s"> » </span><a href="#dictionary_standard">Standard</a></span>
+                <span class="crumb"><span class="s"> » </span><a class="here">metasubstitute-mixin</a></span>
+              </span>
+            </h1>
+
+            <article class="class definition">
+
+              <h1><span class="type">Class</span> <span class="name self">compatible-metaclasses:metasubstitute-mixin</span></h1>
+
+              <p class="direct-superclasses"><a href="https://www.hexstreamsoft.com/libraries/class-options/#dictionary_options-mixin" target="_blank">class-options:options-mixin</a></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Slots:</p>
+                <pre><code>((<var>metasubstitute</var> :initarg :metasubstitute
+                 :reader <code class="relevant"><a href="#dictionary_metasubstitute">compatible-metaclasses:metasubstitute</a></code>
+                 :type class))</code></pre>
+              </section>
+
+            </article>
+
+            <article class="method definition" id="dictionary_initialize-instance_after_metasubstitute-mixin">
+
+              <h1><span class="type">After-Method</span> <span class="name self"><a href="http://www.lispworks.com/documentation/HyperSpec/Body/f_init_i.htm" target="_blank">initialize-instance</a></span></h1>
+
+              <p class="args-and-retvals">(<var>mixin</var> <code class="specializer relevant"><a href="#dictionary_metasubstitute-mixin">compatible-metaclasses:metasubstitute-mixin</a></code>) &amp;key</p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Sets the value of the <var>metasubstitute</var> slot to <code>(<a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#class-prototype" target="_blank">c2mop:class-prototype</a> (c2mop:ensure-finalized (<code class="relevant"><a href="#dictionary_validate-as">compatible-metaclasses:validate-as</a></code> mixin)))</code>.</p>
+              </section>
+
+            </article>
+
+            <article class="method definition" id="dictionary_reinitialize-instance_after_metasubstitute-mixin">
+
+              <h1><span class="type">After-Method</span> <span class="name self"><a href="http://www.lispworks.com/documentation/HyperSpec/Body/f_reinit.htm" target="_blank">reinitialize-instance</a></span></h1>
+
+              <p class="args-and-retvals">(<var>mixin</var> <code class="specializer relevant"><a href="#dictionary_metasubstitute-mixin">compatible-metaclasses:metasubstitute-mixin</a></code>) &amp;key</p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Same as above.</p>
+              </section>
+
+            </article>
+
+          </section>
+
+          <section id="dictionary_metasubstitute">
+
+            <h1 class="breadcrumbs-bar">
+              <span class="section-relative-nav">
+                <a href="#dictionary_metasubstitute" class="anchor">⚓</a>
+              </span>
+              <span class="breadcrumbs">
+                <a href="#dictionary">Dictionary</a>
+                <span class="crumb"><span class="s"> » </span><a href="#dictionary_standard">Standard</a></span>
+                <span class="crumb"><span class="s"> » </span><a class="here">metasubstitute</a></span>
+              </span>
+            </h1>
+
+            <article class="generic-function reader definition">
+
+              <h1><span class="type">Generic Function</span> <span class="name self">compatible-metaclasses:metasubstitute</span></h1>
+
+              <p class="args-and-retvals"><var>metametaclass</var> =&gt; <var>metasubstitute</var></p>
+
+              <section class="description">
+                <h1>Description</h1>
+                <p>Returns the substitute that instances of this metametaclass which inherit from <code class="specializer relevant"><a href="#dictionary_standard-class">compatible-metaclasses:standard-class</a></code> should use to check compatibility using <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a>, or <code>nil</code> if the original class should be used.</p>
+              </section>
+
+            </article>
+
+          </section>
+
+          <nav class="end-of-section-indicator">
+            <a href="#dictionary_standard">
+              "<span>Standard</span>" end.
+            </a>
+          </nav>
+
+        </section>
+
+        <nav class="end-of-section-indicator">
+          <a href="#dictionary">
+            "<span>Dictionary</span>" end.
+          </a>
+        </nav>
+
+      </section>
+
+    </main>
+
+    <footer id="footer">
+      <div class="back-to-top left">
+        <a href="#">⬆</a>
+      </div>
+      <div class="main">
+        <a href="https://validator.w3.org/check?uri=http%3A%2F%2Fwww.hexstreamsoft.com%2Flibraries%2Fcompatible-metaclasses%2F">✔ HTML5</a>
+        <a href="https://www.hexstreamsoft.com/README">✔ Public Domain</a>
+        <a href="https://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2Fwww.hexstreamsoft.com%2Flibraries%2Fcompatible-metaclasses%2F">✔ CSS3</a>
+        <a>✔ Mobile-friendly</a>
+      </div>
+      <div class="back-to-top right">
+        <a href="#">⬆</a>
+      </div>
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,9 @@
+Project's home: https://www.hexstreamsoft.com/libraries/compatible-metaclasses/
+
+
+compatible-metaclasses validates superclasses according to a simple substitution model,
+thereby greatly simplifying the definition of class mixins.
+
+
+This library is in the Public Domain.
+See the UNLICENSE file for details.
