@@ -3,7 +3,7 @@
 (defclass compatible-metaclasses:standard-class (compatible-metaclasses:class)
   ())
 
-(defgeneric compatible-metaclasses:metasubstitute (metaclass)
+(defgeneric compatible-metaclasses:metasubstitute (metametaclass)
   (:method ((class cl:class))
     nil))
 

@@ -39,7 +39,7 @@
 
       </div>
 
-      <p id="last-updated"><span>This page was last updated on </span><time datetime="2020-09-19">19 september 2020</time><span>.</span></p>
+      <p id="last-updated"><span>This page was last updated on </span><time datetime="2020-09-20">20 september 2020</time><span>.</span></p>
 
     </nav>
 
@@ -555,15 +555,54 @@
               </span>
             </h1>
 
-            <article class="generic-function reader definition">
+            <article class="generic-function definition">
 
               <h1><span class="type">Generic Function</span> <span class="name self">compatible-metaclasses:metasubstitute</span></h1>
 
               <p class="args-and-retvals"><var>metametaclass</var> =&gt; <var>metasubstitute</var></p>
 
+              <section class="arguments-and-values">
+                <h1>Arguments and Values</h1>
+                <ul>
+                  <li><var>metametaclass</var> -- A class.</li>
+                  <li><var>substitute</var> -- A class or <code>nil</code>.</li>
+                </ul>
+              </section>
+
               <section class="description">
                 <h1>Description</h1>
-                <p>Returns the substitute that instances of this metametaclass which inherit from <code class="specializer relevant"><a href="#dictionary_standard-class">compatible-metaclasses:standard-class</a></code> should use to check compatibility using <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a>, or <code>nil</code> if the original class should be used.</p>
+                <p>Returns the substitute that instances of this <var>metametaclass</var> which inherit from <code class="specializer relevant"><a href="#dictionary_standard-class">compatible-metaclasses:standard-class</a></code> should use to check compatibility using <a href="https://clos-mop.hexstreamsoft.com/generic-functions-and-methods/#validate-superclass" target="_blank">c2mop:validate-superclass</a>, or <code>nil</code> if the original class should be used.</p>
+              </section>
+
+              <section class="methods">
+                <h1>Methods</h1>
+
+                <article class="method definition" id="dictionary_metasubstitute_metasubstitute-mixin">
+
+                  <h1><span class="type">Method</span> <span class="name self">compatible-metaclasses:metasubstitute</span></h1>
+
+                  <p class="args-and-retvals">(<var>metametaclass</var> <code class="specializer relevant"><a href="#dictionary_metasubstitute-mixin">compatible-metaclasses:metasubstitute-mixin</a></code>) =&gt; <var>metasubstitute</var></p>
+
+                  <section class="description">
+                    <h1>Description</h1>
+                    <p>Returns the value of the <var>metasubstitute</var> slot.</p>
+                  </section>
+
+                </article>
+
+                <article class="method definition" id="dictionary_metasubstitute_cl:class">
+
+                  <h1><span class="type">Method</span> <span class="name self">compatible-metaclasses:metasubstitute</span></h1>
+
+                  <p class="args-and-retvals">(<var>metametaclass</var> <a href="http://www.lispworks.com/documentation/HyperSpec/Body/t_class.htm" target="_blank">class</a>) =&gt; <var>metasubstitute</var></p>
+
+                  <section class="description">
+                    <h1>Description</h1>
+                    <p>Returns <code>nil</code>.</p>
+                  </section>
+
+                </article>
+
               </section>
 
             </article>
